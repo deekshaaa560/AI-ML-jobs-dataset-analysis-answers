@@ -1,0 +1,42 @@
+After Understanding-by checking for null values or anomalies-found out that there were some inaccuracy in the experience_level field and years_of_experience.
+So made a new column named experience_level_v2 to make out other explorations clearer.
+
+import pandas as pd
+
+#Is a PhD worth it for AI roles?
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df_1=pd.read_csv('./ai-jobs-market-2025-2026-salaries/ai_jobs_market_2025_2026.csv')
+
+plt.figure(figsize=(12, 6))
+sns.boxplot(data=df_1, x='experience_level', y='annual_salary_usd', palette='Set2')
+
+plt.title('Outlier Analysis: Salary vs. Binned Experience Level')
+plt.ylabel('Annual Salary (USD)')
+plt.xlabel('Years of Experience (Groups)')
+plt.grid(axis='y', linestyle='--', alpha=0.5)
+plt.show()    #shows outliers that show that the field(experience_level and years_of_experience) had some irregularities.
+
+#Creating a new column that gives correct experience_level according to the years of experience and annual salary.
+
+df=pd.read_csv('./ai-jobs-market-2025-2026-salaries/ai_jobs_market_2025_2026.csv')
+# Define the boundaries for your years
+# 0-2, 2-5, 5-10, 10-100 (100 is just a safe upper limit)
+bins = [0, 2, 5, 10, 100]
+
+# Define the new labels for these buckets
+labels = ['Entry (0-2)', 'Mid (3-5)', 'Senior (6-10)', 'Expert (10+)']
+
+# Create the new column
+df['experience_level_v2'] = pd.cut(df['years_of_experience'], bins=bins, labels=labels, include_lowest=True)
+
+# Check how many people fell into each new "bucket"
+print(df['experience_level_v2'].value_counts())
+
+# Save the updated DataFrame to a new file
+df.to_csv('ai_jobs_updated_2026.csv', index=False)
+
+print("File saved successfully!")
+
